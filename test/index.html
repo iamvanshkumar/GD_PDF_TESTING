@@ -1,0 +1,33 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Image</title>
+</head>
+<body>
+    <div id="imageContainer"></div>
+
+    <script>
+        // Replace 'path/to/convert_pdf_to_images.php' with the correct path to your PHP script
+        const pdfPath = './test.pdf';
+
+        fetch(`./convert_pdf_to_images.php?pdf_path=${pdfPath}`)
+            .then(response => response.json())
+            .then(data => {
+                const imageContainer = document.getElementById('imageContainer');
+                data.forEach(imagePath => {
+                    const img = document.createElement('img');
+                    img.src = imagePath;
+                    img.style.display = 'block';
+                    img.style.margin = '10px auto';
+                    imageContainer.appendChild(img);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching images:', error);
+            });
+    </script>
+</body>
+</html>
