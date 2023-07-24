@@ -1,7 +1,6 @@
 function uploadAndDisplayPDF() {
     const formData = new FormData();
     formData.append('pdfFile', document.getElementById('pdfFile').files[0]);
-
     // AJAX call to upload the file
     const xhr = new XMLHttpRequest();
     xhr.open('POST', 'upload.php', true);
@@ -63,13 +62,15 @@ function displayPDFAsImage(url, callback) {
 }
 
 function saveImageToServer() {
+    const fileInput = document.getElementById('pdfFile');
+    const fileName = fileInput.files[0].name;
     const pdfContainer = document.getElementById('pdf-img');
     const img = pdfContainer.querySelector('img');
 
     const imageData = img.src.split(',')[1];
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'upload.php', true);
+    xhr.open('POST', 'upload.php', true); // Change 'upload.php' to 'save_image.php'
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -80,5 +81,7 @@ function saveImageToServer() {
             }
         }
     };
-    xhr.send('imageData=' + encodeURIComponent(imageData));
+    const dataToSend = 'imageData=' + encodeURIComponent(imageData) + '&fileName=' + encodeURIComponent(fileName);
+
+    xhr.send(dataToSend);
 }

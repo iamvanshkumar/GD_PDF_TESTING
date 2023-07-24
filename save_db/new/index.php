@@ -3,6 +3,8 @@
 
 <head>
     <title>PDF Upload Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.min.js"></script>
+
 </head>
 
 <body>
@@ -12,11 +14,9 @@
         <button type="button" onclick="uploadAndDisplayPDF()">Upload and Display PDF</button>
     </form>
     <div id="pdf-img"></div>
-    <button type="button" onclick="saveImageToServer()">Save Image to Server</button>
     <div id="status"></div>
+    <!-- <button type="button" onclick="saveImageToServer()">Save Image</button> -->
 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.min.js"></script>
     <script src="./script.js"></script>
 </body>
 

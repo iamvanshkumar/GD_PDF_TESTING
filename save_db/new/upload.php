@@ -42,9 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (isset($_POST['imageData'])) {
-        // Handle image data upload
-        $imageData = $_POST['imageData'];
+    if (isset($_POST["imageData"]) && isset($_POST["fileName"])) {
+        // Get the base64-encoded image data and the file name from the POST data
+        $imageData = $_POST["imageData"];
+        $fileName = $_POST["fileName"];
 
         // Generate a unique file name for the image
         $imageFileName = uniqid() . '.jpg';
@@ -58,9 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the specified folder
         if (file_put_contents($imageFolder . $imageFileName, $decodedImage)) {
             // Image saved successfully, now save the image filename in the database
-            $imageSql = "INSERT INTO filetbl (image) VALUES (?)";
+            $imageSql = "UPDATE filetbl SET image=? WHERE pdf=?";
             $imageStmt = mysqli_prepare($db, $imageSql);
-            mysqli_stmt_bind_param($imageStmt, 's', $imageFileName);
+            mysqli_stmt_bind_param($imageStmt, 'ss', $imageFileName, $fileName);
 
             if (mysqli_stmt_execute($imageStmt)) {
                 echo 'Image uploaded and saved successfully on the server and in the database.';

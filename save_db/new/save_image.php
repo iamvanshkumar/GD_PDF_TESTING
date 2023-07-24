@@ -1,27 +1,41 @@
 <?php
-if (isset($_POST['imageData'])) {
-  // Get the base64 image data from the POST request
-  $imageData = $_POST['imageData'];
+require_once '../conn.php';
 
-  // Generate a unique file name for the image
-  $fileName = uniqid() . '.jpg';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['imageData'])) {
+        // Handle image data upload
+        $imageData = $_POST['imageData'];
 
-  // Path to the image folder on your server
-  $imageFolder = 'img/';
+        // Generate a unique file name for the image
+        $imageFileName = uniqid() . '.jpg';
 
-  // Decode the base64 image data
-  $decodedImage = base64_decode($imageData);
+        // Path to the image folder on your server
+        $imageFolder = 'img/';
 
-  // Save the image to the specified folder
-  if (file_put_contents($imageFolder . $fileName, $decodedImage)) {
-    // Image saved successfully
-    http_response_code(200);
-  } else {
-    // Failed to save image
-    http_response_code(500);
-  }
+        // Decode the base64 image data
+        $decodedImage = base64_decode($imageData);
+
+        // Save the image to the specified folder
+        if (file_put_contents($imageFolder . $imageFileName, $decodedImage)) {
+            // Image saved successfully, now save the image filename in the database
+            $imageSql = "INSERT INTO filetbl (image) VALUES (?)";
+            $imageStmt = mysqli_prepare($db, $imageSql);
+            mysqli_stmt_bind_param($imageStmt, 's', $imageFileName);
+
+            if (mysqli_stmt_execute($imageStmt)) {
+                echo 'Image uploaded and saved successfully on the server and in the database.';
+            } else {
+                echo 'Error uploading the image on the server. Error: ' . mysqli_error($db);
+            }
+
+            mysqli_stmt_close($imageStmt);
+        } else {
+            echo 'Failed to save the image on the server.';
+        }
+    }
 } else {
-  // No image data provided
-  http_response_code(400);
+    echo 'No image data was uploaded.';
 }
+
+mysqli_close($db);
 ?>
